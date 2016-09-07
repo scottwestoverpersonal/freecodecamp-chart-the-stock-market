@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Markit On Demand Stock Quote API Demo</title>
+	<link rel="stylesheet" href="http://markitondemand.github.io/DataApis/Resources/bootstrap/bootstrap-2.3.2.css" />
+	<link rel="stylesheet" href="http://markitondemand.github.io/DataApis/Resources/header.css" />
+	<link rel="stylesheet" href="http://markitondemand.github.io/DataApis/Resources/footer.css" />
+	<link rel="stylesheet" href="http://markitondemand.github.io/DataApis/LookupSample/resources/demo.css" />
+
+</head>
+<body>
+
+
+<div class="container web">
+
+	<div class="row content">
+		<div class="span12">
+			<h3 class="page-header">Demo</h3>
+			
+			<form class="well control-group form-inline">
+				<label>Try "AAPL" or "MSFT" or "GE":</label>
+				<input type="text" id="symbol" class="input-" placeholder="Enter symbol">
+        		<button type="submit" class="btn btn-primary" data-loading-text="Loading quote data...">Get Quote</button>
+        		<span class="help-inline">Want more symbols? <a href="http://markitondemand.github.com/DataApis/LookupSample/" target="_blank">Try our Lookup API</a>.</span>
+			</form>
+
+			<p class="terms">Markit On Demand has provided these web services for limited purposes. <a href="http://dev.markitondemand.com/#termsofuse">Read the MIT License and full terms of use</a> before coding.</p>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://markitondemand.github.io/DataApis/StockQuoteSample/resources/QuoteService.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+
+		$("button").button();
+		$("#symbol").focus();
+		
+		//form submit event
+		$("form").submit(function(e){
+
+			e.preventDefault();
+
+			$("button").button("loading");
+
+			var ticker = $("#symbol").val();
+
+			new Markit.QuoteService(ticker, function(jsonResult) {
+				
+				this.clearResult();
+
+			    //Catch errors
+			    if (!jsonResult || jsonResult.Message){
+			        this.renderAlert(jsonResult);
+			        return;
+			    }
+
+			    this.success(jsonResult);
+			    
+			});
+		});
+	});
+
+	//prototype some methods onto our Quote Service
+	Markit.QuoteService.prototype.clearResult = function(){
+		this.resetForm();
+		$("#resultContainer").remove();
+		$("div.alert").remove();
+	};
+
+	Markit.QuoteService.prototype.resetForm = function(){
+		$("button").button("reset");
+		$("form").removeClass("error");
+		$("#symbol")
+			.val($("#symbol").val().toUpperCase())
+			.select()
+			.focus();	
+	};
+
+	Markit.QuoteService.prototype.success = function(jsonResult){
+	    console.log(jsonResult);
+		var $container = $("<div class='hide' id='resultContainer' />");
+		$container.append("<h4>"+jsonResult.Name+" ("+jsonResult.Symbol+")</h4>");
+		$container.append(this.renderResultTable(jsonResult));
+
+		$("form").after($container);
+		$container.fadeIn('fast');
+		this.resetForm();
+	};
+
+	Markit.QuoteService.prototype.renderAlert = function(jsonResult){
+		$("form").addClass("error");
+		$("form").before("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a>"+jsonResult.Message+"</div>");
+		$("div.alert").alert();
+	};
+
+	Markit.QuoteService.prototype.renderResultTable = function(jsonResult){
+		var $table = $("<table />"),
+			$thead = $("<thead />"),
+			$tbody = $("<tbody />"),
+			tableHeadCells = [];
+			tableCells = [];
+		
+		tableHeadCells.push("<tr>");
+		tableHeadCells.push("<th>Last Price</th>");
+		tableHeadCells.push("<th>Change</th>");
+		tableHeadCells.push("<th>Change Percent</th>");
+		tableHeadCells.push("<th>Change Percent YTD</th>");
+		tableHeadCells.push("<th>Last Traded</th>");
+		tableHeadCells.push("</tr>");
+
+		tableCells.push("<tr>");
+		tableCells.push("<td>$",jsonResult.LastPrice,"</td>");
+		tableCells.push("<td>",this.formatChgPct(jsonResult.Change),"</td>");
+		tableCells.push("<td>",this.formatChgPct(jsonResult.ChangePercent),"%</td>");
+		tableCells.push("<td>",jsonResult.ChangePercentYTD.toFixed(2),"%</td>");
+		tableCells.push("<td>",jsonResult.Timestamp,"</td>");
+		tableCells.push("</tr>");
+
+		$table.addClass("table table-bordered table-striped");			
+		$thead.append(tableHeadCells.join(""));
+		$tbody.append(tableCells.join(""));
+
+		$table.append($thead).append($tbody);
+
+		return $table;
+	};
+
+	Markit.QuoteService.prototype.formatChgPct = function(chg){
+		//the quote API returns negative numbers already,
+		//so we just need to add the + sign to positive numbers
+		return (chg <= 0) ? chg.toFixed(2) : "+" + chg.toFixed(2);	
+	};
+
+//http://dev.markitondemand.com/MODApis/Api/v2/InteractiveChart/json?parameters={"Normalized":false,"NumberOfDays":365,"DataPeriod":"Day","Elements":[{"Symbol":"AAPL","Type":"price","Params":["c"]}]}
+
+</script>
+
+</body>
+</html>
