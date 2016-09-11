@@ -2,7 +2,7 @@
 
 A NodeJS App that allows users to search for stocks and see their recent trend. The app uses web sockets, so you can see other users add stocks in real time. This app uses the Markit On Demand APIs for the stock data.
 
-You can view the live demo here:
+You can view the live demo here: https://cryptic-temple-88061.herokuapp.com/
 
 ### The Web App Does the Following:
 * I can view a graph displaying the recent trend lines for each added stock.
