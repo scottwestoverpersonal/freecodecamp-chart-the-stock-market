@@ -11,3 +11,7 @@ You can view the live demo here: https://cryptic-temple-88061.herokuapp.com/
 * I can see changes in real-time when any other user adds or removes a stock. For this you will need to use Web Sockets.
 
 Link to the freecodecamp project - https://www.freecodecamp.com/challenges/chart-the-stock-market
+
+## Deploy On Heroku
+
+To deploy the app to Heroku just click on this button here: [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
