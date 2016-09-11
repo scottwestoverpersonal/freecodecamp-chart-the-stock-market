@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Markit On Demand Lookup API Demo</title>
+      <link rel="stylesheet" href="stylesheets/main.css" />
+      <link rel="stylesheet" href="stylesheets/demo.css" />
+   </head>
+   <body>
+      <div class="container web">
+         <div class="row content">
+            <div class="span12">
+               <div id="chartDemoContainer" style="height: 500px; min-width: 500px; margin-bottom: 30px;"></div>
+               <form class="well form-inline">
+                  <label>Search for a stock:</label>
+                  <input type="text" id="symbolsearch" class="input-" placeholder="Enter company name or symbol">
+                  <span class="help-inline hide"><img src="spinner.gif" align="absmiddle" /> loading...</span>
+                  <span class="help-inline hide label label-info"></span>
+               </form>
+               <div id="stockButtons">
+               </div>
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+      <script type="text/javascript" src="js/purl.js"></script>
+      <script src="js/highstock.js"></script>
+      <script src="js/exporting.js"></script>
+      <script src="js/main.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="js/stock.js"></script>
+   </body>
+</html>
